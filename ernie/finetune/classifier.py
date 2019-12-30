@@ -424,6 +424,8 @@ def acc_and_f1(preds, labels):
 
 
 def acc_f1_precision_recall(preds, labels):
+    print("metric of recall")
+    print()
     preds = np.array(preds)
     labels = np.array(labels)
 
@@ -463,6 +465,8 @@ def recall_score(preds, labels):
 
 
 def simple_accuracy(preds, labels):
+    print("Simple Accuracy")
+    print()
     preds = np.array(preds)
     labels = np.array(labels)
     return (preds == labels).mean()
