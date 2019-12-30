@@ -358,7 +358,7 @@ def evaluate(exe,
             graph_vars,
             eval_phase,
             use_multi_gpu_test=use_multi_gpu_test,
-            metric=metric)
+            metric='acc_f1_precision_recall')
     else:
         return evaluate_regression(
             exe,
