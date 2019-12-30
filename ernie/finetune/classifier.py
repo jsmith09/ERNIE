@@ -31,6 +31,7 @@ from model.ernie import ErnieModel
 
 log = logging.getLogger(__name__)
 
+
 def create_model(args,
                  pyreader_name,
                  ernie_config,
@@ -193,7 +194,7 @@ def evaluate_classify(exe,
                       graph_vars,
                       eval_phase,
                       use_multi_gpu_test=False,
-                      metric='simple_accuracy',
+                      metric='acc_f1_precision_recall',
                       is_classify=False,
                       is_regression=False):
     train_fetch_list = [
@@ -252,26 +253,32 @@ def evaluate_classify(exe,
     if metric == 'acc_and_f1':
         ret = acc_and_f1(preds, labels)
         evaluate_info = "[%s evaluation] ave loss: %f, ave_acc: %f, f1: %f, data_num: %d, elapsed time: %f s" \
-            % (eval_phase, cost, ret['acc'], ret['f1'], total_num_seqs, elapsed_time)
+                        % (eval_phase, cost, ret['acc'], ret['f1'], total_num_seqs, elapsed_time)
+    if metric == 'acc_f1_precision_recall':
+        ret = acc_f1_precision_recall(preds, labels)
+        evaluate_info = "[%s evaluation] ave loss: %f, ave_acc: %f, f1: %f, precision: %f, recall: %f, data_num: %d, " \
+                        "elapsed time: %f s" \
+                        % (eval_phase, cost, ret['acc'], ret['f1'], ret['precision'], ret['recall'], total_num_seqs,
+                           elapsed_time)
     elif metric == 'matthews_corrcoef':
         ret = matthews_corrcoef(preds, labels)
         evaluate_info = "[%s evaluation] ave loss: %f, matthews_corrcoef: %f, data_num: %d, elapsed time: %f s" \
-            % (eval_phase, cost, ret, total_num_seqs, elapsed_time)
+                        % (eval_phase, cost, ret, total_num_seqs, elapsed_time)
     elif metric == 'pearson_and_spearman':
         ret = pearson_and_spearman(scores, labels)
         evaluate_info = "[%s evaluation] ave loss: %f, pearson:%f, spearman:%f, corr:%f, data_num: %d, elapsed time: %f s" \
-            % (eval_phase, cost, ret['pearson'], ret['spearman'], ret['corr'], total_num_seqs, elapsed_time)
+                        % (eval_phase, cost, ret['pearson'], ret['spearman'], ret['corr'], total_num_seqs, elapsed_time)
     elif metric == 'simple_accuracy':
         ret = simple_accuracy(preds, labels)
         evaluate_info = "[%s evaluation] ave loss: %f, acc:%f, data_num: %d, elapsed time: %f s" \
-            % (eval_phase, cost, ret, total_num_seqs, elapsed_time)
+                        % (eval_phase, cost, ret, total_num_seqs, elapsed_time)
     elif metric == "acc_and_f1_and_mrr":
         ret_a = acc_and_f1(preds, labels)
         preds = sorted(
             zip(qids, scores, labels), key=lambda elem: (elem[0], -elem[1]))
         ret_b = evaluate_mrr(preds)
         evaluate_info = "[%s evaluation] ave loss: %f, acc: %f, f1: %f, mrr: %f, data_num: %d, elapsed time: %f s" \
-            % (eval_phase, cost, ret_a['acc'], ret_a['f1'], ret_b, total_num_seqs, elapsed_time)
+                        % (eval_phase, cost, ret_a['acc'], ret_a['f1'], ret_b, total_num_seqs, elapsed_time)
     else:
         raise ValueError('unsupported metric {}'.format(metric))
     return evaluate_info
@@ -284,7 +291,6 @@ def evaluate_regression(exe,
                         eval_phase,
                         use_multi_gpu_test=False,
                         metric='pearson_and_spearman'):
-
     if eval_phase == "train":
         train_fetch_list = [graph_vars["loss"].name]
         if "learning_rate" in graph_vars:
@@ -328,7 +334,7 @@ def evaluate_regression(exe,
     if metric == 'pearson_and_spearman':
         ret = pearson_and_spearman(scores, labels)
         evaluate_info = "[%s evaluation] ave loss: %f, pearson:%f, spearman:%f, corr:%f, elapsed time: %f s" \
-            % (eval_phase, 0.0, ret['pearson'], ret['spearmanr'], ret['corr'], elapsed_time)
+                        % (eval_phase, 0.0, ret['pearson'], ret['spearmanr'], ret['corr'], elapsed_time)
     else:
         raise ValueError('unsupported metric {}'.format(metric))
 
@@ -344,7 +350,6 @@ def evaluate(exe,
              metric='simple_accuracy',
              is_classify=False,
              is_regression=False):
-
     if is_classify:
         return evaluate_classify(
             exe,
@@ -416,6 +421,45 @@ def acc_and_f1(preds, labels):
         "f1": f1,
         "acc_and_f1": (acc + f1) / 2,
     }
+
+
+def acc_f1_precision_recall(preds, labels):
+    preds = np.array(preds)
+    labels = np.array(labels)
+
+    acc = simple_accuracy(preds, labels)
+    f1 = f1_score(preds, labels)
+    precision = precision_score(preds, labels)
+    recall = recall_score(preds, labels)
+
+    return {
+        "acc": acc,
+        "f1": f1,
+        "precision": precision,
+        "recall": recall
+    }
+
+
+def precision_score(preds, labels):
+    preds = np.array(preds)
+    labels = np.array(labels)
+
+    precision_metric = fluid.metrics.Precision()
+    precision_metric.update(preds=preds, labels=labels)
+    val = precision_metric.eval()
+
+    return val
+
+
+def recall_score(preds, labels):
+    preds = np.array(preds)
+    labels = np.array(labels)
+
+    recall_metric = fluid.metrics.Recall()
+    recall_metric.update(preds=preds, labels=labels)
+    val = recall_metric.eval()
+
+    return val
 
 
 def simple_accuracy(preds, labels):
