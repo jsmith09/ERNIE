@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c1bcd01-7402-4520-bf55-f5e14498bb4e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/ERNIE.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ERNIE.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ernie/finetune/classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/ernie/finetune/classifier.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,9 +16,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="57eb9b44-5cd9-4df2-bd51-cf3f857b167b" />
+  </component>
   <component name="ProjectId" id="1Vi5SR9whgRFDQS7fr6LDPcs9Q8" />
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -40,6 +47,14 @@
       <option name="presentableId" value="Default" />
       <updated>1577723074467</updated>
     </task>
+    <task id="LOCAL-00001" summary="added print messages">
+      <created>1577736086519</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1577736086519</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -47,10 +62,16 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added print messages" />
+    <option name="LAST_COMMIT_MESSAGE" value="added print messages" />
   </component>
 </project>

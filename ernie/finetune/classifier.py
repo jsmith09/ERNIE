@@ -347,7 +347,7 @@ def evaluate(exe,
              graph_vars,
              eval_phase,
              use_multi_gpu_test=False,
-             metric='simple_accuracy',
+             metric='acc_f1_precision_recall',
              is_classify=False,
              is_regression=False):
     if is_classify:
